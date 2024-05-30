@@ -8,7 +8,7 @@ export default {
         {
           files: ['*.css', '*.scss'],
           rules: {
-            'vanilla-extract/sort-css-properties': 'error',
+            'sort-css-properties/sort-css-properties': 'error',
           },
         }
       ],
