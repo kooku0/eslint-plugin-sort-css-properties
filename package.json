@@ -1,7 +1,7 @@
 {
-  "name": "eslint-plugin-sort-css-properties",
+  "name": "eslint-plugin-vanilla-extract",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.1",
   "description": "A custom ESLint plugin to sort CSS properties in specific order",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
