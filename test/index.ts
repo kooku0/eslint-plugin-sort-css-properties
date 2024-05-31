@@ -14,7 +14,7 @@ const invalidCode = `
 const styles = {
   display: 'flex',
   position: 'relative',
-  top: '10px'
+  top: '10px',
   ...otherStyles,
 };
 `;

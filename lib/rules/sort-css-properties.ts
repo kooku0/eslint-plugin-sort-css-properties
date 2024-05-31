@@ -31,24 +31,26 @@ export const sortCssProperties: Rule.RuleModule = {
           return;
         }
 
-        const properties = node.properties.map((prop: any) => prop.key?.name || prop.key?.value);
-
         // Separate spread operator and other properties
-        const spreadIndices: number[] = [];
+        const properties: string[] = [];
         const spreadProperties: string[] = [];
-        properties.forEach((prop: any, index: number) => {
-          if (prop && prop.startsWith && prop.startsWith('...')) {
-            spreadIndices.push(index);
-            spreadProperties.push(prop);
+        const othersProperties: string[] = [];
+        node.properties.forEach((prop: any) => {
+          if (prop.type === 'SpreadElement') {
+            spreadProperties.push(`...${prop.argument?.name}`);
+            properties.push(`...${prop.argument?.name}`);
+          } else {
+            othersProperties.push(prop.key?.name || prop.key?.value);
+            properties.push(prop.key?.name || prop.key?.value);
           }
         });
-        spreadIndices.reverse().forEach((index) => properties.splice(index, 1));
 
         // Sort the remaining properties
-        const sortedProperties = [...properties].sort((a, b) => {
+        const sortedProperties = othersProperties.sort((a, b) => {
           return cssPropertyOrderInJs.indexOf(a) - cssPropertyOrderInJs.indexOf(b);
         });
 
+        // Check if sorting is necessary
         if (JSON.stringify(properties) !== JSON.stringify([...spreadProperties, ...sortedProperties])) {
           context.report({
             node,
@@ -57,6 +59,11 @@ export const sortCssProperties: Rule.RuleModule = {
               const sourceCode = context.getSourceCode();
               const sortedCode = [...spreadProperties, ...sortedProperties]
                 .map((prop) => {
+                  // spread operator
+                  if (prop.startsWith('...')) {
+                    return prop;
+                  }
+
                   const propNode = node.properties.find((p: any) => (p.key?.name || p.key?.value) === prop);
                   return sourceCode.getText(propNode);
                 })
