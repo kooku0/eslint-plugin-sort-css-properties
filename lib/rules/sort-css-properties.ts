@@ -27,21 +27,37 @@ export const sortCssProperties: Rule.RuleModule = {
   create(context) {
     return {
       ObjectExpression(node: any) {
-        const properties = node.properties.map((prop: any) => prop.key.name || prop.key.value);
+        if (!node.properties || !Array.isArray(node.properties)) {
+          return;
+        }
 
+        const properties = node.properties.map((prop: any) => prop.key?.name || prop.key?.value);
+
+        // Separate spread operator and other properties
+        const spreadIndices: number[] = [];
+        const spreadProperties: string[] = [];
+        properties.forEach((prop: any, index: number) => {
+          if (prop && prop.startsWith && prop.startsWith('...')) {
+            spreadIndices.push(index);
+            spreadProperties.push(prop);
+          }
+        });
+        spreadIndices.reverse().forEach((index) => properties.splice(index, 1));
+
+        // Sort the remaining properties
         const sortedProperties = [...properties].sort((a, b) => {
           return cssPropertyOrderInJs.indexOf(a) - cssPropertyOrderInJs.indexOf(b);
         });
 
-        if (JSON.stringify(properties) !== JSON.stringify(sortedProperties)) {
+        if (JSON.stringify(properties) !== JSON.stringify([...spreadProperties, ...sortedProperties])) {
           context.report({
             node,
             message: 'CSS properties should be sorted in a specific order.',
             fix(fixer) {
               const sourceCode = context.getSourceCode();
-              const sortedCode = sortedProperties
+              const sortedCode = [...spreadProperties, ...sortedProperties]
                 .map((prop) => {
-                  const propNode = node.properties.find((p: any) => (p.key.name || p.key.value) === prop);
+                  const propNode = node.properties.find((p: any) => (p.key?.name || p.key?.value) === prop);
                   return sourceCode.getText(propNode);
                 })
                 .join(',\n');

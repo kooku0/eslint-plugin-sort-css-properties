@@ -3,6 +3,7 @@ import { sortCssProperties } from '../lib/rules/sort-css-properties';
 
 const validCode = `
 const styles = {
+  ...otherStyles,
   position: 'relative',
   top: '10px',
   display: 'flex'
@@ -14,6 +15,7 @@ const styles = {
   display: 'flex',
   position: 'relative',
   top: '10px'
+  ...otherStyles,
 };
 `;
 
