@@ -1,5 +1,5 @@
 import { RuleTester } from 'eslint';
-import { rule } from '../lib/rules/sort-css-properties';
+import { sortCssProperties } from '../lib/rules/sort-css-properties';
 
 const validCode = `
 const styles = {
@@ -24,7 +24,7 @@ const ruleTester = new RuleTester({
   },
 });
 
-ruleTester.run('sort-css-properties', rule, {
+ruleTester.run('sort-css-properties', sortCssProperties, {
   valid: [
     {
       code: validCode,

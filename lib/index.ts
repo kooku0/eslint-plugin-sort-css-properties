@@ -1,12 +1,12 @@
-import { rule } from './rules/sort-css-properties.js';
+import { sortCssProperties } from './rules/sort-css-properties.js';
 
-export default {
+export = {
   configs: {
     recommended: {
       plugins: ['sort-css-properties'],
       overrides: [
         {
-          files: ['*.css', '*.scss'],
+          files: ['*.css.js', '*.css.ts'],
           rules: {
             'sort-css-properties/sort-css-properties': 'error',
           },
@@ -15,6 +15,6 @@ export default {
     },
   },
   rules: {
-    'sort-css-properties': rule,
+    'sort-css-properties': sortCssProperties,
   },
 };

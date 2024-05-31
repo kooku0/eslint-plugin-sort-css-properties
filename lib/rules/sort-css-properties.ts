@@ -13,7 +13,7 @@ const cssPropertyOrderInJs = cssPropertyGroups
       : camelCase(val),
   );
 
-export const rule: Rule.RuleModule = {
+export const sortCssProperties: Rule.RuleModule = {
   meta: {
     type: "suggestion",
     docs: {
