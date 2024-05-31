@@ -32,11 +32,13 @@
     "build:cjs": "tsc --p ./tsconfig.cjs.json",
     "build:esm": "tsc --p ./tsconfig.esm.json",
     "build:types": "tsc --p ./tsconfig.types.json",
+    "test": "ts-node ./test/index.ts",
     "release": "npm run build && npm version patch && npm publish"
   },
   "author": "kooku0 <koomg9599@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/eslint": "^8.56.10",
     "@types/lodash.camelcase": "^4.3.9",
     "@types/pascalcase": "^1.0.3",
     "@typescript-eslint/parser": "^7.11.0",

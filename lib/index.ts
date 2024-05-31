@@ -1,4 +1,4 @@
-import sortCssProperties from './rules/sort-css-properties.js';
+import { rule } from './rules/sort-css-properties.js';
 
 export default {
   configs: {
@@ -15,6 +15,6 @@ export default {
     },
   },
   rules: {
-    'sort-css-properties': sortCssProperties,
+    'sort-css-properties': rule,
   },
 };
