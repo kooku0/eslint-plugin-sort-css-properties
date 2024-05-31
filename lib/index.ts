@@ -1,6 +1,6 @@
 import { sortCssProperties } from './rules/sort-css-properties.js';
 
-export default {
+export = {
   configs: {
     recommended: {
       plugins: ['sort-css-properties'],
