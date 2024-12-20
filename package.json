@@ -1,5 +1,5 @@
 {
-  "name": "@kooku0/eslint-plugin-sort-css-properties",
+  "name": "eslint-plugin-sort-css-properties",
   "private": false,
   "version": "0.0.13",
   "description": "A custom ESLint plugin to sort CSS properties in specific order",
@@ -57,7 +57,6 @@
     "camelcase": "^8.0.0"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
