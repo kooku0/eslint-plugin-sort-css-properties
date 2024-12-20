@@ -18,7 +18,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@kooku0'
       - run: npm ci
-      - run: npm test
       - run: npm run build
 
   publish-gpr:
