@@ -30,7 +30,7 @@
     "build:cjs": "tsc --p ./tsconfig.cjs.json",
     "build:esm": "tsc --p ./tsconfig.esm.json",
     "build:types": "tsc --p ./tsconfig.types.json",
-    "test": "ts-node ./test/index.ts",
+    "test": "jest --verbose",
     "release": "npm run build && npm version patch && npm publish"
   },
   "author": "kooku0 <koomg9599@gmail.com>",
@@ -39,10 +39,13 @@
     "@types/eslint": "^8.56.10",
     "@types/lodash.camelcase": "^4.3.9",
     "@types/pascalcase": "^1.0.3",
-    "@typescript-eslint/parser": "^7.11.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "lodash.camelcase": "^4.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "~5.1.6",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
   },
   "peerDependencies": {
     "eslint": ">=7"

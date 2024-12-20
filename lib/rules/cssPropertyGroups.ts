@@ -418,7 +418,6 @@ export const cssPropertyGroups = [
     ],
   },
   {
-    // (Tony) Pseudo Selector
     properties: [":visited", ":hover", ":focus", ":active"],
   },
 ];

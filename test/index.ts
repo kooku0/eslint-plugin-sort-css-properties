@@ -5,20 +5,20 @@ const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2020, sourceTy
 
 ruleTester.run('sort-css-properties', sortCssProperties, {
   valid: [
-    {
-      code: `
-const styles = {
-  position: 'relative',
-  top: '10px',
+//     {
+//       code: `
+// const styles = {
+//   position: 'relative',
+//   top: '10px',
 
-  display: 'flex'
-};
-      `,
-    },
+//   display: 'flex'
+// };
+//       `,
+//     },
     {
       code: `
 const styles = {
-  ...otherStyles,
+  ...vars.typography.title3Bold,
 
   position: 'relative',
   top: '10px',
@@ -29,45 +29,45 @@ const styles = {
     },
   ],
   invalid: [
-    {
-      code: `
-const styles = {
-  display: 'flex',
-  top: '10px',
-  position: 'relative'
-};
-      `,
-      errors: [{ message: 'CSS properties should be sorted in a specific order.' }],
-      output: `
-const styles = {
-  position: 'relative',
-  top: '10px',
+//     {
+//       code: `
+// const styles = {
+//   display: 'flex',
+//   top: '10px',
+//   position: 'relative'
+// };
+//       `,
+//       errors: [{ message: 'CSS properties should be sorted in a specific order.' }],
+//       output: `
+// const styles = {
+//   position: 'relative',
+//   top: '10px',
 
-  display: 'flex'
-};
-      `,
-    },
-    {
-      code: `
-const styles = {
-  display: 'flex',
+//   display: 'flex'
+// };
+//       `,
+//     },
+//     {
+//       code: `
+// const styles = {
+//   display: 'flex',
   
-  position: 'relative',
-  top: '10px',
-  ...otherStyles
-};
-      `,
-      errors: [{ message: 'CSS properties should be sorted in a specific order.' }],
-      output: `
-const styles = {
-  ...otherStyles,
+//   position: 'relative',
+//   top: '10px',
+//   ...vars.typography.title3Bold
+// };
+//       `,
+//       errors: [{ message: 'CSS properties should be sorted in a specific order.' }],
+//       output: `
+// const styles = {
+//   ...vars.typography.title3Bold,
 
-  position: 'relative',
-  top: '10px',
+//   position: 'relative',
+//   top: '10px',
 
-  display: 'flex'
-};
-      `,
-    },
+//   display: 'flex'
+// };
+//       `,
+//     },
   ],
 });

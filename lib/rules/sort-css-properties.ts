@@ -32,23 +32,24 @@ export const sortCssProperties: Rule.RuleModule = {
           return;
         }
 
-        const sourceCode = context.getSourceCode();
+        // Check if this is a CSS-in-JS object
+        const hasCssProperties = node.properties.some((prop: any) => {
+          const propName = prop.key?.name || prop.key?.value;
+          return cssPropertyOrderInJs.some(group => 
+            group.some(cssProp => cssProp === propName)
+          );
+        });
 
-        // Separate spread operator and other properties, and track line breaks
+        if (!hasCssProperties) {
+          return;
+        }
+
+        const sourceCode = context.getSourceCode();
         const properties: string[] = [];
         const spreadProperties: string[] = [];
         const othersProperties: string[] = [];
-        const lineBreaks: number[] = [];
 
-        node.properties.forEach((prop: any, index: number) => {
-          if (index > 0) {
-            const prevToken = node.properties[index - 1];
-            const linesBetween = prop.loc.start.line - prevToken.loc.end.line;
-            if (linesBetween > 1) {
-              for (let i = 0; i < linesBetween - 1; i++) properties.push('');
-            }
-          }
-
+        node.properties.forEach((prop: any) => {
           if (prop.type === 'SpreadElement') {
             spreadProperties.push(`...${prop.argument?.name}`);
             properties.push(`...${prop.argument?.name}`);
@@ -58,7 +59,7 @@ export const sortCssProperties: Rule.RuleModule = {
           }
         });
 
-        // Sort properties into groups based on cssPropertyOrderInJs
+        // Sort properties into groups
         const sortedPropertiesGroups: string[][] = cssPropertyOrderInJs.map((group) =>
           group
             .filter((prop) => othersProperties.includes(prop))
@@ -73,11 +74,10 @@ export const sortCssProperties: Rule.RuleModule = {
           return acc;
         }, [] as string[]);
 
-        if (spreadProperties.length > 0) spreadProperties.push(''); // Insert a blank line after spread properties
+        if (spreadProperties.length > 0) {
+          spreadProperties.push(''); // Insert a blank line after spread properties
+        }
         const finalSortedProperties = [...spreadProperties, ...flattenedSortedProperties];
-
-        // console.log('input', properties);
-        // console.log('output', finalSortedProperties);
 
         // Check if sorting is necessary
         if (JSON.stringify(properties) !== JSON.stringify(finalSortedProperties)) {
@@ -87,38 +87,43 @@ export const sortCssProperties: Rule.RuleModule = {
             fix(fixer) {
               const sortedCodeArray = finalSortedProperties
                 .map((prop) => {
-                  // spread operator
                   if (prop.startsWith('...')) {
                     return prop;
                   }
 
                   if (prop === '') {
-                    return ''; // Preserve line breaks
+                    return '';
                   }
 
-                  const propNode = node.properties.find((p: any) => (p.key?.name || p.key?.value) === prop);
+                  const propNode = node.properties.find((p: any) => 
+                    (p.key?.name || p.key?.value) === prop
+                  );
                   return sourceCode.getText(propNode);
                 });
 
-              let sortedCode = '';
+              // 원본 코드의 들여쓰기를 유지하기 위해 첫 번째 속성의 들여쓰기를 가져옴
+              const firstProp = node.properties[0];
+              const baseIndent = ' '.repeat(firstProp.loc.start.column);
+              
+              const indent = sourceCode.text.slice(0, node.range[0]).match(/\s*$/)?.[0] || '';
+              const propertyIndent = indent + '  ';
+              
+              let sortedCode = '{\n';
               sortedCodeArray.forEach((item, index) => {
                 if (item === '') {
-                    if (index !== sortedCodeArray.length - 1) {
-                        sortedCode += '\n';
-                    }
+                  if (index !== sortedCodeArray.length - 1) {
+                    sortedCode += '\n';
+                  }
                 } else {
-                    sortedCode += item;
-                    if (index !== sortedCodeArray.length - 1) {
-                        sortedCode += ',\n';
-                    }
+                  sortedCode += `${propertyIndent}${item}`;
+                  if (index !== sortedCodeArray.length - 1) {
+                    sortedCode += ',\n';
+                  }
                 }
               });
+              sortedCode += `\n${indent}}`;
 
-              // Adjust the formatting to match the expected output
-              const indentedSortedCode = sortedCode.split('\n').map(line => line.trim() ? `  ${line}` : line).join('\n');
-              const fixedCode = `{\n${indentedSortedCode}\n}`;
-
-              return fixer.replaceTextRange([node.range[0], node.range[1]], fixedCode);
+              return fixer.replaceText(node, sortedCode);
             },
           });
         }
